@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@android:color/holo_purple">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="169dp"
+        android:text="WALLPAPER APP"
+        android:fontFamily="sans-serif-light"
+        android:textSize="30dp"
+        android:textColor="@android:color/white"
+        android:textFontWeight="@android:integer/config_longAnimTime"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="275dp"
+        android:background="@android:color/transparent"
+        android:bottomLeftRadius="100dp"
+        android:bottomRightRadius="100dp"
+        android:layout_centerHorizontal="true"
+        android:text="Set WallPaper"
+        android:textFontWeight="@android:integer/config_mediumAnimTime"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="20dp"
+        android:topLeftRadius="100dp"
+        android:topRightRadius="100dp" />
+
+</RelativeLayout>
