@@ -1,22 +1,31 @@
 package com.example.wallpaper;
 
 import java.nio.channels.AsynchronousChannel;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.RequiresApi;
+
 public class MyWallPaperService extends WallpaperService {
 
-    static int hexcode = 0x0000ff;
+    float x,y;
+    public Clock clock;
+    String curTime;
+    int hexcode = 255;
+
     @Override
     public Engine onCreateEngine() {
         return new MyWallpaperEngine();
@@ -29,7 +38,6 @@ public class MyWallPaperService extends WallpaperService {
             public void run() {
                 draw();
             }
-
         };
         private Paint paint = new Paint();
         int width;
@@ -37,8 +45,10 @@ public class MyWallPaperService extends WallpaperService {
         private boolean visible = true;
 
         public MyWallpaperEngine() {
-            paint.setColor(Color.WHITE);
-            paint.setTextSize(200);
+
+            paint.setColor(Color.parseColor("#ffffff"));
+            paint.setStyle(Paint.Style.FILL);
+            paint.setTextSize(120);
             handler.post(drawRunner);
         }
 
@@ -72,34 +82,50 @@ public class MyWallPaperService extends WallpaperService {
             super.onTouchEvent(event);
         }
 
+
         private void draw() {
+            Date date = new Date();
+            int hours = date.getHours();
+            int minutes = date.getMinutes();
+            int seconds = date.getSeconds();
+            String h = hours + "";
+            if (hours/10 == 0) h = "0" + hours;
+            String m = minutes + "";
+            if (minutes/10 == 0) m = "0" + minutes;
+            String s = seconds + "";
+            if (seconds/10 == 0) s = "0" + seconds;
+
+            curTime = h+":"+m+":"+s;
+            int color = Color.parseColor("#" + h + m + s);
+
+            //String hexa = Integer.toHexString(hexcode);
+            //char ch[] = new char[6];
+            //for(int i=0; i<6; i++)
+                //ch[i] = '0';
+            //for(int i=0; i<Math.min(hexa.length(),6); i++)
+              //  ch[5-i]=hexa.charAt(Math.min(hexa.length(),6)-i-1);
+            //String q = new String(ch);
+            //curTime = "#"+ q;
+
+            //int color = Color.parseColor("#" + q);
+
+
             SurfaceHolder holder = getSurfaceHolder();
-            Canvas canvas = null;
-            try {
-                canvas = holder.lockCanvas();
-                if (canvas != null) {
-                    drawtext(canvas, hexcode);
-                    if(hexcode == 0xffffff)
-                        hexcode = 0;
-                    else
-                        hexcode++;
-                    onDestroy();
-                }
-            } finally {
-                if (canvas != null)
-                    holder.unlockCanvasAndPost(canvas);
+            Canvas canvas = holder.lockCanvas();
+            if (canvas != null){
+                canvas.drawColor(color);
+                x = (canvas.getWidth() / 2) - (paint.measureText(curTime) / 2);
+                y = (canvas.getHeight() / 2) - ((paint.ascent() + paint.descent()) / 2);
+                canvas.drawText(curTime,x,y,paint);
+                holder.unlockCanvasAndPost(canvas);
+                hexcode++;
             }
-
             handler.removeCallbacks(drawRunner);
-            if (visible) {
-                handler.postDelayed(drawRunner, 5000);
+            if (visible){
+                handler.postDelayed(drawRunner,1000);
             }
         }
 
-        public void drawtext(Canvas canvas, int hexcode) {
-            canvas.drawARGB(100, Color.red(hexcode), Color.green(hexcode), Color.blue(hexcode));
-            canvas.drawText(Integer.toHexString(hexcode),width/2,height/2,paint);
-        }
     }
 
 }
